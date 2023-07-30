@@ -7,7 +7,8 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route("/cities", methods=["GET"], strict_slashes=False)
+@app_views.route("/states/<state_id>/cities", methods=["GET"],
+                 strict_slashes=False)
 def get_cities_by_state(state_id):
     """Retrieves the list of all City objects of a State"""
     state = storage.get(State, state_id)
@@ -51,10 +52,10 @@ def create_city(state_id):
 
     data = request.get_json()
     if not data:
-        abort(400, "Not a JSON")
+        abort(400, description="Not a JSON")
 
     if "name" not in data:
-        abort(400, "Missing name")
+        abort(400, description="Missing name")
 
     data["state_id"] = state_id
     new_city = City(**data)
@@ -72,7 +73,7 @@ def update_city(city_id):
 
     data = request.get_json()
     if not data:
-        abort(400, "Not a JSON")
+        abort(400, description="Not a JSON")
 
     data.pop("id", None)
     data.pop("state_id", None)
