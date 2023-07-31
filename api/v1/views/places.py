@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """A view for Place objects that handles all default RESTFul API actions"""
+from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
-from api.v1.views import app_views
 from models.city import City
-from models.user import User
 from models.place import Place
+from models.user import User
 
 
-@app_views.route("/cities/<city_id>/places", methods=["GET"],
+@app_views.route("/cities/<city_id>/places",
+                 methods=["GET"],
                  strict_slashes=False)
 def get_places_by_city(city_id):
     """Retrieves the list of all Place objects of a City"""
@@ -30,7 +31,9 @@ def get_place(place_id):
     return jsonify(place.to_dict())
 
 
-@app_views.route("/places/<place_id>", methods=["DELETE"], strict_slashes=False)
+@app_views.route("/places/<place_id>",
+                 methods=["DELETE"],
+                 strict_slashes=False)
 def delete_place(place_id):
     """Deletes a Place object by its ID"""
     place = storage.get(Place, place_id)
@@ -43,7 +46,8 @@ def delete_place(place_id):
     return jsonify({}), 200
 
 
-@app_views.route("/cities/<city_id>/places", methods=["POST"],
+@app_views.route("/cities/<city_id>/places",
+                 methods=["POST"],
                  strict_slashes=False)
 def create_place(city_id):
     """Creates a Place object associated with a City"""
@@ -53,10 +57,10 @@ def create_place(city_id):
 
     data = request.get_json()
     if not data:
-        abort(400, "Not a JSON")
+        abort(400, description="Not a JSON")
 
     if "user_id" not in data:
-        abort(400, "Missing user_id")
+        abort(400, description="Missing user_id")
 
     user_id = data["user_id"]
     user = storage.get(User, user_id)
@@ -64,7 +68,7 @@ def create_place(city_id):
         abort(404)
 
     if "name" not in data:
-        abort(400, "Missing name")
+        abort(400, description="Missing name")
 
     data["city_id"] = city_id
     new_place = Place(**data)
@@ -82,7 +86,7 @@ def update_place(place_id):
 
     data = request.get_json()
     if not data:
-        abort(400, "Not a JSON")
+        abort(400, description="Not a JSON")
 
     data.pop("id", None)
     data.pop("user_id", None)
