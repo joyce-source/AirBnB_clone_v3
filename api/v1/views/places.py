@@ -107,7 +107,7 @@ def update_place(place_id):
 @app_views.rout("/places_search", methods=["POST"], strict_slashes=False)
 def search_places():
     """
-    Retrieves all Place objects depending of the JSON in the body of the request
+    Retrieves all Place objects based on the JSON in the body of the request
     """
     data = request.get_json()
     if data is None:
